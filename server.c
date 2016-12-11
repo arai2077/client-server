@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-#define BUFLEN 512 // Bufferin maksimipituus
+#define BUFLEN 32 // Bufferin maksimipituus
 #define PORT 8081 // Käytettävä portti
 
 // Virhetilanteita varten virheviesti
@@ -15,6 +15,43 @@ void error(char *s)
     exit(1);
 }
 
+// Lottonumeroarvonta
+// -------------------------------------------------
+void lottery(char *numArr, int arrlen) {
+
+  int x, y, z;
+
+  // Arvotaan numeroarrayhyn voittonumerot
+  for(x = 0; x < arrlen; x++) {
+
+    // Arvotaan luku 1-42
+    numArr[x] = (int) rand()%42+1;
+
+    // Hankkiudutaan eroon duplikaateista
+    for(y=0; y<x; y++) {
+      if (numArr[y] == numArr[x]) {
+	numArr[x] = (int) rand()%42+1;
+	y=0;
+      }
+    }
+  }
+
+  // Järjestellään numerot järjestykseen
+  for(y=0; y < arrlen-1; y++ )
+    {
+      for(x=0; x < arrlen-1; x++ )
+	{
+	  if (numArr[x] > numArr[x+1])
+	    {
+	      int temp;
+	      temp = numArr[x];
+	      numArr[x] = numArr [x+1];
+	      numArr [x+1] =temp;
+	    }
+	}
+    }
+}
+
 // int main
 // --------------------------------------------------
 int main(void) {
@@ -23,7 +60,7 @@ int main(void) {
     struct sockaddr_in serv_addr, cli_addr;
     int sockfd, cli_len = sizeof(cli_addr), recv_len;
     char buffer[BUFLEN];
-    int numArr[7] = {1, 2, 3, 4, 5, 6, 7};
+    int numArr[BUFLEN] = {0};
 
     // Luodaan uusi UDP-protokollaa käyttävä socketti
     // Palautetaan virhe jos luonti epäonnistuu
@@ -58,8 +95,10 @@ int main(void) {
         // Tulostetaan viestin sisältö
         printf("Vastaanotettu data: %s\n" , buffer);
 
+	lottery(numArr, BUFLEN);
+
         // Vastataan clientille, erroria jos failaa
-        if (sendto(sockfd, numArr, sizeof(numArr), 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
+        if (sendto(sockfd, numArr, BUFLEN, 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
             error("Virhe kirjoitettaessa sockettiin");
         }
     }

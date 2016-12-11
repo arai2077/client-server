@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 
 #define SERVER "127.0.0.1" // Serverin osoite, tässä tapauksessa localhost
-#define BUFLEN 8 // Bufferin maksimipituus
+#define BUFLEN 32 // Bufferin maksimipituus
 #define PORT 8081 // Käytettävä portti
 
 // Virhetilanteita varten virheviesti
@@ -19,10 +19,10 @@ int main(void)
 {
     // Socketin tiedot ja bufferi
     struct sockaddr_in serv_addr;
-    int sockfd, sock_len=sizeof(serv_addr);
+    int sockfd, sock_len=sizeof(serv_addr), i;
     char buffer[BUFLEN];
     char message[BUFLEN];
-    char numArr[7];
+    char numArr[BUFLEN];
 
     // Luodaan uusi UDP-protokollaa käyttävä socketti
     // Palautetaan virhe jos luonti epäonnistuu
@@ -43,7 +43,7 @@ int main(void)
     while(1)
     {
         // Kysellään käyttäjältä viestiä
-        printf("Syötä viesti: ");
+        printf("Kirjoita mitä vain saadaksesi lottonumerot: ");
         gets(message);
 
         // Lähetetään viesti
@@ -55,11 +55,16 @@ int main(void)
         memset(buffer,'\0', BUFLEN);
 
         // Yritetään lukea socketista
-        if (recvfrom(sockfd, buffer, BUFLEN, 0, (struct sockaddr *) &serv_addr, &sock_len) == -1) {
+        if (recvfrom(sockfd, numArr, BUFLEN, 0, (struct sockaddr *) &serv_addr, &sock_len) == -1) {
             error("Virhe lukiessa socketista");
         }
 
-        puts(buffer);
+	// Tulostetaan vastaanotetun arrayn sisältö
+	printf("Arvotut lottonumerot: ");
+	for(i = 0; i < sizeof(numArr)-4; i+=4) {
+	  printf("%d ", numArr[i]);
+	}
+	printf("\n");
     }
 
     close(sockfd);
