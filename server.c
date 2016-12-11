@@ -23,6 +23,7 @@ int main(void) {
     struct sockaddr_in serv_addr, cli_addr;
     int sockfd, cli_len = sizeof(cli_addr), recv_len;
     char buffer[BUFLEN];
+    int numArr[7] = {1, 2, 3, 4, 5, 6, 7};
 
     // Luodaan uusi UDP-protokollaa käyttävä socketti
     // Palautetaan virhe jos luonti epäonnistuu
@@ -58,7 +59,7 @@ int main(void) {
         printf("Vastaanotettu data: %s\n" , buffer);
 
         // Vastataan clientille, erroria jos failaa
-        if (sendto(sockfd, buffer, BUFLEN, 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
+        if (sendto(sockfd, numArr, sizeof(numArr), 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
             error("Virhe kirjoitettaessa sockettiin");
         }
     }
