@@ -15,44 +15,6 @@ void error(char *s)
     exit(1);
 }
 
-// Funktio lottonumeroiden arpomiseen
-// --------------------------------------------------
-void lottery(char *result, int arrlen) {
-
-   int numArr[arrlen];
-   int x, y, z;
-
-   // Arvotaan numeroarrayhyn voittonumerot
-   for(x = 0; x < arrlen; x++) {
-
-     // Arvotaan luku 1-42
-     numArr[x] = (int) rand()%42+1;
-
-     // Hankkiudutaan eroon duplikaateista
-     for(y=0; y<x; y++) {
-       if (numArr[y] == numArr[x]) {
-         numArr[x] = (int) rand()%42+1;
-         y=0;
-       }
-     }
-   }
-
-    // Järjestellään numerot järjestykseen
-    for(y=0; y < arrlen-1; y++ )
-    {
-       for(x=0; x < arrlen-1; x++ )
-       {
-          if (numArr[x] > numArr[x+1])
-          {
-             int temp;
-             temp = numArr[x];
-             numArr[x] = numArr [x+1];
-             numArr [x+1] =temp;
-          }
-       }
-    }
-}
-
 // int main
 // --------------------------------------------------
 int main(void) {
@@ -61,7 +23,6 @@ int main(void) {
     struct sockaddr_in serv_addr, cli_addr;
     int sockfd, cli_len = sizeof(cli_addr), recv_len;
     char buffer[BUFLEN];
-    char result[7];
 
     // Luodaan uusi UDP-protokollaa käyttävä socketti
     // Palautetaan virhe jos luonti epäonnistuu
@@ -96,11 +57,8 @@ int main(void) {
         // Tulostetaan viestin sisältö
         printf("Vastaanotettu data: %s\n" , buffer);
 
-	// Kutsutaan lottonumerot
-	lottery(result, 7);
-
         // Vastataan clientille, erroria jos failaa
-        if (sendto(sockfd, result, sizeof(result), 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
+        if (sendto(sockfd, buffer, BUFLEN, 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
             error("Virhe kirjoitettaessa sockettiin");
         }
     }
