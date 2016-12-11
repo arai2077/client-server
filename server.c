@@ -9,8 +9,7 @@
 
 // Virhetilanteita varten virheviesti
 // --------------------------------------------------
-void error(char *s)
-{
+void error(char *s) {
     perror(s);
     exit(1);
 }
@@ -19,7 +18,7 @@ void error(char *s)
 // -------------------------------------------------
 void lottery(char *numArr, int arrlen) {
 
-  int x, y, z;
+  int x, y;
 
   // Arvotaan numeroarrayhyn voittonumerot
   for(x = 0; x < arrlen; x++) {
@@ -30,25 +29,22 @@ void lottery(char *numArr, int arrlen) {
     // Hankkiudutaan eroon duplikaateista
     for(y=0; y<x; y++) {
       if (numArr[y] == numArr[x]) {
-	numArr[x] = (int) rand()%42+1;
-	y=0;
+        numArr[x] = (int) rand()%42+1;
+        y=0;
       }
     }
   }
 
   // Järjestellään numerot järjestykseen
-  for(y=0; y < arrlen-1; y++ )
-    {
-      for(x=0; x < arrlen-1; x++ )
-	{
-	  if (numArr[x] > numArr[x+1])
-	    {
-	      int temp;
-	      temp = numArr[x];
-	      numArr[x] = numArr [x+1];
-	      numArr [x+1] =temp;
-	    }
-	}
+  for(y=0; y < arrlen-1; y++ ) {
+      for(x=0; x < arrlen-1; x++ ) {
+        if (numArr[x] > numArr[x+1]) {
+          int temp;
+          temp = numArr[x];
+          numArr[x] = numArr [x+1];
+          numArr [x+1] =temp;
+        }
+      }
     }
 }
 
@@ -82,8 +78,8 @@ int main(void) {
     }
 
     // Kuunnellaan yhteyksiä
-    while(1)
-    {
+    while(1) {
+
         printf("Odotellaan dataa...\n");
         fflush(stdout);
 
@@ -95,7 +91,7 @@ int main(void) {
         // Tulostetaan viestin sisältö
         printf("Vastaanotettu data: %s\n" , buffer);
 
-	lottery(numArr, BUFLEN);
+        lottery(numArr, BUFLEN);
 
         // Vastataan clientille, erroria jos failaa
         if (sendto(sockfd, numArr, BUFLEN, 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {

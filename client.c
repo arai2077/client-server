@@ -9,14 +9,13 @@
 #define PORT 8081 // Käytettävä portti
 
 // Virhetilanteita varten virheviesti
-void error(char *s)
-{
+void error(char *s) {
     perror(s);
     exit(1);
 }
 
-int main(void)
-{
+int main(void) {
+
     // Socketin tiedot ja bufferi
     struct sockaddr_in serv_addr;
     int sockfd, sock_len=sizeof(serv_addr), i;
@@ -59,12 +58,12 @@ int main(void)
             error("Virhe lukiessa socketista");
         }
 
-	// Tulostetaan vastaanotetun arrayn sisältö
-	printf("Arvotut lottonumerot: ");
-	for(i = 0; i < sizeof(numArr)-4; i+=4) {
-	  printf("%d ", numArr[i]);
-	}
-	printf("\n");
+        // Tulostetaan vastaanotetun arrayn sisältö
+        printf("Arvotut lottonumerot: ");
+        for(i = 0; i < sizeof(numArr)-4; i+=4) {
+          printf("%d ", numArr[i]);
+        }
+        printf("\n");
     }
 
     close(sockfd);
