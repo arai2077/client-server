@@ -17,14 +17,10 @@ void error(char *s)
 
 // Funktio lottonumeroiden arpomiseen
 // --------------------------------------------------
-void lottery() {
+void lottery(char *result, int arrlen) {
 
-   int numArr[7] = {0};
-   int arrlen, x, y, z;
-   char result[7] = {''};
-
-   // Alustetaan numeroarrayn pituus
-   arrlen = sizeof(numArr)/sizeof(int);
+   int numArr[arrlen];
+   int x, y, z;
 
    // Arvotaan numeroarrayhyn voittonumerot
    for(x = 0; x < arrlen; x++) {
@@ -55,9 +51,6 @@ void lottery() {
           }
        }
     }
-
-    // Palautetaan numerot
-    return result;
 }
 
 // int main
@@ -103,8 +96,10 @@ int main(void) {
         // Tulostetaan viestin sisältö
         printf("Vastaanotettu data: %s\n" , buffer);
 
+	// Kutsutaan lottonumerot
+	lottery(result, 7);
+
         // Vastataan clientille, erroria jos failaa
-        result = lottery();
         if (sendto(sockfd, result, sizeof(result), 0, (struct sockaddr*) &cli_addr, cli_len) == -1) {
             error("Virhe kirjoitettaessa sockettiin");
         }
